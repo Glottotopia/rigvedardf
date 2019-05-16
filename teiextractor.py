@@ -25,8 +25,8 @@ class Utterance():
       self.joiners.append('-')
       
   def _utteranceRDF(self,ID):
-    print("\nu%s: a ligt:Utterance ;"%ID)
-    print('\tID "%s" .'%sentenceID)
+    print("\n:u%s: a ligt:Utterance ;"%ID)
+    print('\tCoNNL:ID "%s" .'%sentenceID)
     self._wordtierRDF(ID,self.unsegmentedwords,ID)
     self._morphemetierRDF(ID,self.segmentedwords,glosses,ID)
     
@@ -43,9 +43,9 @@ class Utterance():
     print("\n:mt%s a ligt:morphemetier ;"%number)
     print("	powla:hasParent :u%s ;"%parent)
     print('	rdfs:label "%s"@sk .'%"xyz")
-    ID = "mt%i"%number 
+    ID = "mt%s"%number 
     if len(segmentedwords) != len(glosses):
-      print("number of words do not match across lines")
+      #print("number of words do not match across lines")
       return
     for wordnumber,gloss in enumerate(glosses):
         if gloss['grammaticalgloss'] == '': #monomorphemic
@@ -84,6 +84,7 @@ class Utterance():
     
 
 filename = sys.argv[1]
+bookID = filename[-11:-8]
 
 tree = ET.parse(filename)
 root = tree.getroot()
@@ -95,7 +96,8 @@ lgs = root.findall(".//{http://www.tei-c.org/ns/1.0}lg")
 print("""@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix dcterms: <http://purl.org/dc/terms/>.  
 @prefix ligt: <http://purl.org/liodi/ligt#>.  
-@prefix powla: <http://purl.org/powla/powla.owl#>.  
+@prefix powla: <http://purl.org/powla/powla.owl#>. 
+@prefix CoNNL: <http://ufal.mff.cuni.cz/conll2009-st/task-description.html#>.  
   
 """)
 print("x a document ;")
@@ -129,5 +131,5 @@ for lg in lgs:
       glosses.append({'lexicalgloss':lexicalgloss,'grammaticalgloss':grammaticalgloss}) 
     if glosses != []:      
       u = Utterance(unsegmentedwords,glosses,sentenceID)
-      u.toRDF(utteranceID)
+      u.toRDF("%s_%s"%(bookID,utteranceID))
       utteranceID += 1
