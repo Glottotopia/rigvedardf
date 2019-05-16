@@ -28,7 +28,7 @@ class Utterance():
     print("\nu%s: a ligt:Utterance ;"%ID)
     print('\tID "%s" .'%sentenceID)
     self._wordtierRDF(ID,self.unsegmentedwords,ID)
-    self._morphemetierRDF(i,self.segmentedwords,glosses,ID)
+    self._morphemetierRDF(ID,self.segmentedwords,glosses,ID)
     
   def _wordtierRDF(self,number,tier,parent):
     print("\n:wt%s a ligt:wordtier ;"%number)
