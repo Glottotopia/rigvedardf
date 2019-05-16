@@ -26,8 +26,8 @@ class Utterance():
       
   def _utteranceRDF(self,ID):
     print("\n:u%s: a ligt:Utterance ;"%ID)
-    print('\tCoNNL:ID "%s" .'%sentenceID)
     print('\tdcterms:isPartOf "rigveda:%s" ;'%sentenceID[:-1].replace('.',''))
+    print('\tCoNNL:ID "%s" .'%sentenceID)
     self._wordtierRDF(ID,self.unsegmentedwords,ID)
     self._morphemetierRDF(ID,self.segmentedwords,glosses,ID)
     
@@ -45,7 +45,7 @@ class Utterance():
     
   def _morphemetierRDF(self,number,segmentedwords,glosses,parent):
     print("\n:mt%s a ligt:morphemetier ;"%number)
-    print("	powla:hasParent :u%s ;"%parent)
+    print("	powla:hasParent :u%s ."%parent)
     ID = "mt%s"%number 
     if len(segmentedwords) != len(glosses):
       #print("number of words do not match across lines")
@@ -55,11 +55,11 @@ class Utterance():
           print("\n:mt%sm%s.0 a ligt:morph ;"%(parent,wordnumber))
           print("	dcterms:isPartOf :mt%s ;"%number)
           print("	dcterms:isPartOf :w%s.%i ;"%(number,wordnumber))
-          print('	rdfs:label "%s"@sk ;'%self.segmentedwords[wordnumber])
-          print('	rdfs:label "%s"@en ;'%gloss['lexicalgloss'])           
           if wordnumber+1 < len(glosses):
             nextnumber = wordnumber + 1
-            print('	ligt:next :mt%sm%s.%s .'%(parent,wordnumber+1,0))
+            print('	ligt:next :mt%sm%s.%s ;'%(parent,wordnumber+1,0))
+          print('	rdfs:label "%s"@sk ;'%self.segmentedwords[wordnumber])
+          print('	rdfs:label "%s"@en .'%gloss['lexicalgloss'])           
         else:
           try:
             stem,suffix = self.segmentedwords[wordnumber].split('-') #bimorphemic segmentable
@@ -73,20 +73,20 @@ class Utterance():
             print("\n:mt%sm%s.1 a ligt:morph ;"%(parent,wordnumber))
             print("	dcterms:isPartOf :mt%s ;"%number)
             print("	dcterms:isPartOf :w%s.%i ;"%(number,wordnumber))
-            print('	rdfs:label "%s"@sk ;'%suffix)
-            print('	rdfs:label "%s"@en ;'%gloss['grammaticalgloss'])            
             if wordnumber+1 < len(glosses):
               nextnumber = wordnumber + 1
-              print('	ligt:next :mt%sm%s.%s .'%(parent,wordnumber+1,0))
+              print('	ligt:next :mt%sm%s.%s ;'%(parent,wordnumber+1,0))
+            print('	rdfs:label "%s"@sk ;'%suffix)
+            print('	rdfs:label "%s"@en .'%gloss['grammaticalgloss'])            
           except ValueError:  #bimorphemic non-segmentable
             print("\n:mt%sm%s.0 a ligt:morph ;"%(parent,wordnumber))
             print("	dcterms:isPartOf :mt%s ;"%number)
             print("	dcterms:isPartOf :w%s.%i ;"%(number,wordnumber))
-            print('	rdfs:label "%s"@sk ;'%segmentedwords[0])
-            print('	rdfs:label "%s"@en ;'%"%s.%s"%(gloss['lexicalgloss'],gloss["grammaticalgloss"]))           
             if wordnumber+1 < len(glosses):
               nextnumber = wordnumber + 1
-              print('	ligt:next :mt%sm%s.%s .'%(parent,wordnumber+1,0))
+              print('	ligt:next :mt%sm%s.%s ;'%(parent,wordnumber+1,0))
+            print('	rdfs:label "%s"@sk ;'%segmentedwords[0])
+            print('	rdfs:label "%s"@en .'%"%s.%s"%(gloss['lexicalgloss'],gloss["grammaticalgloss"]))           
           
             
       
@@ -111,9 +111,9 @@ print("""@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix ligt: <http://purl.org/liodi/ligt#>.  
 @prefix powla: <http://purl.org/powla/powla.owl#>. 
 @prefix CoNNL: <http://ufal.mff.cuni.cz/conll2009-st/task-description.html#>.  
-@prefix rigveda: <https:/vedaweb.uni-koeln.de#>.    
+@prefix rigveda: <https://vedaweb.uni-koeln.de#>.    
+@prefix : <https://test.com#>.    
 """)
-print("x a document ;")
 utteranceID=0 
 for lg in lgs: 
   ls = lg.findall("{http://www.tei-c.org/ns/1.0}l")  
